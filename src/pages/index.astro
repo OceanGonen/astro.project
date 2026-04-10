@@ -1,17 +1,308 @@
 ---
+// @ts-nocheck
 
+const player = Astro.url.searchParams.get("player");
+
+let games = [];
+let error = null;
+let bestGame = null;
+let worstGame = null;
+let timeline = [];
+let firstDate = null;
+let lastDate = null;
+
+function extractGames(raw) {
+  return raw.map((game) => ({
+    id: game.id,
+    createdAt: game.createdAt,
+    winner: game.winner ?? "draw",
+    white: {
+      user: game.players.white.user?.id,
+      rating: game.players.white.rating,
+      accuracy: game.players.white.analysis?.accuracy ?? null,
+    },
+    black: {
+      user: game.players.black.user?.id,
+      rating: game.players.black.rating,
+      accuracy: game.players.black.analysis?.accuracy ?? null,
+    },
+  }));
+}
+
+function groupGamesByRating(games, username) {
+  const groups = {};
+  games.forEach((game) => {
+    const isWhite = game.white.user?.toLowerCase() === username.toLowerCase();
+    const isBlack = game.black.user?.toLowerCase() === username.toLowerCase();
+    if (!isWhite && !isBlack) return;
+
+    const userRating   = isWhite ? game.white.rating   : game.black.rating;
+    const userAccuracy = isWhite ? game.white.accuracy  : game.black.accuracy;
+    const opponent     = isWhite
+      ? { name: game.black.user, rating: game.black.rating, accuracy: game.black.accuracy }
+      : { name: game.white.user, rating: game.white.rating, accuracy: game.white.accuracy };
+
+    if (!groups[userRating]) groups[userRating] = [];
+    groups[userRating].push({
+      id: game.id,
+      rating: userRating,
+      accuracy: userAccuracy,
+      winner: game.winner ?? "draw",
+      color: isWhite ? "white" : "black",
+      date: game.createdAt,
+      opponent,
+    });
+  });
+  return groups;
+}
+
+function findAccuracyExtremes(grouped) {
+  const results = {};
+  for (const rating in grouped) {
+    const withAcc = grouped[rating].filter((g) => g.accuracy !== null);
+    if (!withAcc.length) { results[rating] = { highest: null, lowest: null }; continue; }
+    results[rating] = {
+      highest: withAcc.reduce((a, b) => b.accuracy > a.accuracy ? b : a),
+      lowest:  withAcc.reduce((a, b) => b.accuracy < a.accuracy ? b : a),
+    };
+  }
+  return results;
+}
+
+function createTimeline(games, username) {
+  return games
+    .map((game) => {
+      const isWhite = game.white.user?.toLowerCase() === username.toLowerCase();
+      const isBlack = game.black.user?.toLowerCase() === username.toLowerCase();
+      if (!isWhite && !isBlack) return null;
+      return { date: game.createdAt, rating: isWhite ? game.white.rating : game.black.rating };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date - b.date);
+}
+
+function getResult(game) {
+  if (game.winner === "draw") return "½ Draw";
+  return game.winner === game.color ? "Win" : "Loss";
+}
+
+if (player) {
+  try {
+    const response = await fetch(
+      `https://lichess.org/api/games/user/${player}?perfType=rapid&analysed=true&accuracy=true&max=100`,
+      { headers: { Accept: "application/x-ndjson" } }
+    );
+
+    if (!response.ok) throw new Error(`Lichess API error: ${response.status}`);
+
+    const text = await response.text();
+    const raw  = text.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    games      = extractGames(raw);
+
+    const grouped  = groupGamesByRating(games, player);
+    const analysis = findAccuracyExtremes(grouped);
+    timeline       = createTimeline(games, player);
+
+    for (const rating in analysis) {
+      const { highest, lowest } = analysis[rating];
+      if (highest && (!bestGame  || highest.accuracy > bestGame.accuracy))
+        bestGame  = { ...highest, rating };
+      if (lowest  && (!worstGame || lowest.accuracy  < worstGame.accuracy))
+        worstGame = { ...lowest,  rating };
+    }
+
+    if (games.length) {
+      firstDate = new Date(Math.min(...games.map((g) => g.createdAt))).toLocaleDateString("en-GB");
+      lastDate  = new Date(Math.max(...games.map((g) => g.createdAt))).toLocaleDateString("en-GB");
+    }
+
+  } catch (e) {
+    error = e.message;
+  }
+}
+
+// Safely serialize for client — define:vars handles the escaping
+const timelineData = timeline;
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChessLens</title>
+    <link rel="stylesheet" href="/src/styles/style.css" />
+  </head>
+  <body>
+
+    <h1>ChessLens</h1>
+
+    <form method="GET" action="/">
+      <div class="input-row">
+        <label for="player">LiChess username</label>
+        <input
+          type="text"
+          id="player"
+          name="player"
+          placeholder="Enter username"
+          value={player ?? ""}
+          required
+        />
+        <button type="submit">Analyze</button>
+      </div>
+    </form>
+
+    {error && <p class="error">Error: {error}</p>}
+
+    {player && !error && games.length === 0 && (
+      <p class="loading">No analyzed games found for <strong>{player}</strong>.</p>
+    )}
+
+    {timeline.length > 0 && (
+      <div id="chartContainer">
+        <h2>Rating Timeline</h2>
+        <canvas id="ratingChart"></canvas>
+      </div>
+    )}
+
+    {bestGame && (
+      <p class="date-range">
+        Games from <strong>{firstDate}</strong> to <strong>{lastDate}</strong>
+        &nbsp;&middot;&nbsp; {games.length} games fetched
+      </p>
+    )}
+
+    {(bestGame || worstGame) && (
+      <div class="cards-row">
+
+        {bestGame && (
+         <div class="result best">
+  <h3>Best Game</h3>
+  <strong>{bestGame.accuracy}%</strong>
+
+  <div class="card-body">
+    <div class="card-side">
+      <p><span>Rating</span>  <b>{bestGame.rating}</b></p>
+      <p><span>Color</span>   <b>{bestGame.color}</b></p>
+      <p><span>Date</span>    <b>{new Date(bestGame.date).toLocaleDateString("en-GB")}</b></p>
+      
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-side">
+      <p class="side-label">Opponent</p>
+      <p><span>Name</span>      <b>{bestGame.opponent.name}</b></p>
+      <p><span>Rating</span>    <b>{bestGame.opponent.rating}</b></p>
+      <p><span>Accuracy</span>  <b>{bestGame.opponent.accuracy != null ? bestGame.opponent.accuracy + "%" : "N/A"}</b></p>
+    </div>
+  </div>
+
+<div class="card-footer">
+  <span class="result-label">Result:</span>
+  <b class={bestGame.winner === "draw" ? "draw" : bestGame.winner === bestGame.color ? "win" : "loss"}>
+    {getResult(bestGame)}
+  </b>
+  <a href={`https://lichess.org/${bestGame.id}`} target="_blank">View game →</a>
+</div>
+</div>
+        )}
+
+        {worstGame && (
+          <div class="result worst">
+  <h3>Worst Game</h3>
+  <strong>{worstGame.accuracy.toFixed(1)}%</strong>
+
+  <div class="card-body">
+    <div class="card-side">
+      
+      <p><span>Rating</span>  <b>{worstGame.rating}</b></p>
+      <p><span>Color</span>   <b>{worstGame.color}</b></p>
+      <p><span>Date</span>    <b>{new Date(worstGame.date).toLocaleDateString("en-GB")}</b></p>
+     
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-side">
+      <p class="side-label">Opponent</p>
+      <p><span>Name</span>      <b>{worstGame.opponent.name}</b></p>
+      <p><span>Rating</span>    <b>{worstGame.opponent.rating}</b></p>
+      <p><span>Accuracy</span>  <b>{worstGame.opponent.accuracy != null ? worstGame.opponent.accuracy + "%" : "N/A"}</b></p>
+    </div>
+  </div>
+
+<div class="card-footer">
+  <span class="result-label">Result:</span>
+  <b class={worstGame.winner === "draw" ? "draw" : worstGame.winner === worstGame.color ? "win" : "loss"}>
+    {getResult(worstGame)}
+  </b>
+  <a href={`https://lichess.org/${worstGame.id}`} target="_blank">View game →</a>
+</div></div>
+        )}
+
+      </div>
+    )}
+
+    {timeline.length > 0 && (
+      <script define:vars={{ timelineData }} is:inline>
+        window.__timelineData = timelineData;
+      </script>
+    )}
+
+    {timeline.length > 0 && (
+      <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    )}
+
+    {timeline.length > 0 && (
+      <script is:inline>
+        const labels  = window.__timelineData.map((p) => new Date(p.date).toLocaleDateString("en-GB"));
+        const ratings = window.__timelineData.map((p) => p.rating);
+
+        new Chart(document.getElementById("ratingChart"), {
+          type: "line",
+          data: {
+            labels,
+            datasets: [{
+              data: ratings,
+              borderColor: "#4052A1",
+              backgroundColor: "#4082A1",
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 4,
+              pointBackgroundColor: "#4052A1",
+              pointBorderColor: "#4052A1",
+              pointBorderWidth: 2,
+              pointHoverRadius: 6,
+              fill: true,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid:   { color: "rgba(255,255,255,0.04)" },
+                ticks:  { color: "#7a8499", font: { size: 11 } },
+                border: { color: "rgba(255,255,255,0.06)" },
+              },
+              y: {
+                beginAtZero: false,
+                grid:   { color: "rgba(255,255,255,0.04)" },
+                ticks:  { color: "#7a8499", font: { size: 11 } },
+                border: { color: "rgba(255,255,255,0.06)" },
+              },
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#1e2535",
+                borderColor: "rgba(79,195,161,0.3)",
+                borderWidth: 1,
+                titleColor: "#e8eaf0",
+                bodyColor: "#4fc3a1",
+                padding: 10,
+              },
+            },
+          },
+        });
+      </script>
+    )}
+
+  </body> 
 </html>
