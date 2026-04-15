@@ -201,6 +201,41 @@ canvas {
   margin-top: 1rem;
 }
 
+.chart-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.8rem;
+}
+
+#range-info {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+#analyze-btn {
+  padding: 7px 18px;
+  border-radius: var(--radius);
+  background: transparent;
+  border: 1px solid var(--primary-accent);
+  color: var(--primary-accent);
+  font-size: 0.83rem;
+  font-family: 'text-font';
+  cursor: pointer;
+  margin: 0;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+
+#analyze-btn.pulsing {
+  animation: pulse-cta 1s ease-in-out infinite;
+}
+
+@keyframes pulse-cta {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.5); }
+  50%  { box-shadow: 0 0 0 8px rgba(0, 212, 255,0.5);}
+}
+
+
 
 
 

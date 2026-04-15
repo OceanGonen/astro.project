@@ -149,7 +149,7 @@ const allGamesData = games;
           value={player ?? ""}
           required
         />
-        <button type="submit"><span>Fetch stats</span></button>
+        <button type="submit"><span>Fetch player stats</span></button>
       </div>
     </form>
 
@@ -170,8 +170,10 @@ const allGamesData = games;
       )}
     </div>
     <canvas id="ratingChart"></canvas>
-    <p id="range-info"></p>
-    <button id="analyze-btn" style="display:none">Analyze period</button>
+ <div class="chart-footer">
+  <p id="range-info"></p>
+  <button id="analyze-btn" style="display:none">Analyze period</button>
+</div>
   </div>
 )}
 
@@ -279,7 +281,7 @@ const allGamesData = games;
           }
 
           var COLOR_NORMAL   = "#ff8c00";
-          var COLOR_INVERTED = "#ff3355";
+          var COLOR_INVERTED = "#ff8c00";
 
           var rangePlugin = {
             id: "rangeSelector",
@@ -298,7 +300,7 @@ const allGamesData = games;
 
               // ── Region fill ───────────────────────────────────────────────
               ctx.fillStyle = inv
-                ? "rgba(255, 51, 85, 0.15)"   // red tint outside handles
+                ? "rgba(255, 140, 0, 0.18)"   // red tint outside handles
                 : "rgba(255, 140, 0, 0.18)";  // orange tint between handles
 
               if (!inv) {
@@ -425,6 +427,11 @@ const allGamesData = games;
             }
 
             document.getElementById("analyze-btn").style.display = "";
+            // pulse animatie resetten en opnieuw starten
+  var btn = document.getElementById("analyze-btn");
+  btn.classList.remove("pulsing");
+  void btn.offsetWidth; // reflow forceren zodat animatie herstart
+  btn.classList.add("pulsing");
           }
 
           updateRangeInfo();
@@ -466,6 +473,8 @@ const allGamesData = games;
             var idxMax     = Math.max(handleA, handleB);
             var startTs    = window.__timelineData[idxMin].date;
             var endTs      = window.__timelineData[idxMax].date;
+
+            this.classList.remove("pulsing");
 
             var filtered = allGames.filter(function (g) {
               var inRange = g.createdAt >= startTs && g.createdAt <= endTs;

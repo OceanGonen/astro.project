@@ -32,3 +32,6 @@ De geselecteerde tijd periode van de rating graph update nu live en vertelt ook 
 
 ![alt text](image-6.png)
 "Analyze period" knop geïmplementeerd. Na het selecteren van een range verschijnt een knop die de games filtert op de gekozen periode en de best en worst game daaruit toont in de kaarten.
+
+
+![alt text](image-8.png)
