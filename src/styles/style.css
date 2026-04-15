@@ -1,46 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
 @font-face {
-  font-family: 'title-font'; 
-  src: url('../assets/fonts/title-font/nexus-font/Nexus-ZV54m.ttf') format('truetype'); 
- 
+  font-family: 'title-font';
+  src: url('../assets/fonts/title-font/nexus-font/Nexus-ZV54m.ttf') format('truetype');
+
 }
+
 @font-face {
-  font-family: 'text-font'; 
-  src: url('../assets/fonts/text-font/gatte-modern-font/GatteModernLight-e94GO.otf') format('opentype'); 
- 
+  font-family: 'text-font';
+  src: url('../assets/fonts/text-font/gatte-modern-font/GatteModernLight-e94GO.otf') format('opentype');
+
 }
+
 :root {
-  /* --bg:           #0f1117;
-  --bg2:          #161b27;
-  --bg3:          #1e2535;
-  --primary-accent:         #4994B6;
-  --teal-dim:     rgba(79, 195, 161, 0.12);
-  --teal-border:  rgba(79, 195, 161, 0.30);
-  --red:          #e05a5a;
-  --red-dim:      rgba(224, 90, 90, 0.10);
-  --red-border:   rgba(224, 90, 90, 0.30);
-  --text:         #e8eaf0;
-  --text-muted:   #7a8499;
-  --border:       rgba(255, 255, 255, 0.07);
-  --radius:       10px;
-
-  --result-win: #5bb274; */
+  --bg:         #0d1f24;
+--bg2:        #152c33;
+--bg3:        #1c3840;
+--text-muted: #6ab8cc;
+  --primary-accent: #00d4ff;
+  --teal-dim: rgba(0, 212, 255, 0.10);
+  --teal-border: rgba(0, 212, 255, 0.28);
+  --red: #e05a5a;
+  --red-dim: rgba(224, 90, 90, 0.10);
+  --red-border: rgba(224, 90, 90, 0.30);
+  --text: #d8f5ff;
+  --border: rgba(255, 255, 255, 0.07);
+  --radius: 10px;
+  --result-win: #5bb274;
 }
-
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
- 
+
 body {
   font-family: 'text-font';
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding: 2.5rem 1.5rem;
+  padding: 0.2rem 1.5rem;
 }
+
 h1 {
   font-size: 1.7rem;
   font-weight: 700;
@@ -48,7 +50,7 @@ h1 {
   color: var(--primary-accent);
   margin-bottom: 0.2rem;
 }
- 
+
 h2 {
   font-size: 0.78rem;
   font-weight: 600;
@@ -60,8 +62,84 @@ h2 {
 
 input,
 button {
-    padding: 8px;
-    margin: 5px;
+  padding: 8px;
+  margin: 5px;
+}
+
+
+/* MARK: CTA */
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.input-row label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.input-row input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: 9px 14px;
+  font-size: 0.88rem;
+  font-family: 'text-font';
+  outline: none;
+  transition: border-color 0.2s;
+  width: 220px;
+}
+
+.input-row input::placeholder {
+  color: var(--text-muted);
+}
+
+.input-row input:focus {
+  border-color: var(--primary-accent);
+}
+
+.input-row button {
+  padding: 9px 20px;
+  border-radius: var(--radius);
+  background: transparent;
+  border: 1px solid var(--primary-accent);
+  color: var(--primary-accent);
+  font-size: 0.88rem;
+  font-family: 'text-font';
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+}
+
+.input-row button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--primary-accent);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+
+.input-row button:hover::before {
+  transform: translateX(0);
+}
+
+.input-row button:hover span{
+  color: var(--bg) !important;
+}
+
+.input-row button span {
+  position: relative;
+  z-index: 1;
+  color: inherit;
 }
 
 
@@ -72,15 +150,57 @@ button {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
   max-width: 100%;
 }
- 
+
 canvas {
   max-width: 100%;
   max-height: 220px;
 }
- 
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.date-range {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: 'text-font';
+}
+
+#range-info {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: 'text-font';
+  min-height: 1.2em;
+}
+
+#analyze-btn {
+  margin-top: 0.6rem;
+  padding: 7px 18px;
+  border-radius: var(--radius);
+  background: transparent;
+  border: 1px solid #ff8c00;
+  color: #ff8c00;
+  font-size: 0.82rem;
+  font-family: 'text-font';
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+#analyze-btn:hover {
+  background: #ff8c00;
+  color: var(--bg);
+}
+
+#period-cards-row {
+  margin-top: 1rem;
+}
+
 
 
 
@@ -93,6 +213,7 @@ canvas {
   display: flex;
   gap: 1rem;
   width: 100%;
+  margin-top: 1rem;
 }
 
 .cards-row .result {
@@ -111,7 +232,7 @@ canvas {
   flex-direction: column;
   gap: 0.55rem;
 }
- 
+
 .result h3 {
   font-size: 0.78rem;
   font-weight: 600;
@@ -120,7 +241,7 @@ canvas {
   color: var(--text-muted);
   margin-bottom: 0.2rem;
 }
- 
+
 .result strong {
   font-size: 2rem;
   font-weight: 700;
@@ -129,25 +250,25 @@ canvas {
   display: block;
   margin-bottom: 0.4rem;
 }
- 
+
 .result p {
   display: flex;
   justify-content: space-between;
   font-size: 0.83rem;
   color: var(--text-muted);
 }
- 
+
 .result p span,
 .result p b {
   color: var(--text);
   font-weight: 500;
 }
- 
+
 .result small {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
- 
+
 .result a {
   display: inline-block;
   margin-top: 0.4rem;
@@ -162,14 +283,19 @@ canvas {
   transition: background 0.15s;
 }
 
-.result a:hover { background: rgba(79, 195, 161, 0.22); }
+.result a:hover {
+  background: rgba(79, 195, 161, 0.22);
+}
 
 .result.worst a {
   color: var(--primary-accent);
   border-color: var(--teal-border);
   background: var(--teal-dim);
 }
-.result.worst a:hover { background: rgba(79, 195, 161, 0.22); }
+
+.result.worst a:hover {
+  background: rgba(79, 195, 161, 0.22);
+}
 
 
 /* MARK: Card */
@@ -245,9 +371,18 @@ canvas {
   align-self: auto;
   white-space: nowrap;
 }
-b.win  { color: var(--result-win); }
-b.loss { color: var(--red);  }
-b.draw { color: var(--text-muted); }
+
+b.win {
+  color: var(--result-win);
+}
+
+b.loss {
+  color: var(--red);
+}
+
+b.draw {
+  color: var(--text-muted);
+}
 
 @media (max-width: 600px) {
   .cards-row {
@@ -259,10 +394,9 @@ b.draw { color: var(--text-muted); }
 
 /* MARK: Error handling */
 .loading {
-    color: #7b7b7b;
+  color: #7b7b7b;
 }
 
 .error {
-    color: red;
+  color: red;
 }
-
