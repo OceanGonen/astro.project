@@ -270,6 +270,7 @@ const allGamesData = games;
           var handleA  = Math.max(0,     Math.floor(n * 0.25));
           var handleB  = Math.min(n - 1, Math.floor(n * 0.75));
           var dragging = null; // 'A' | 'B' | null
+          var graphInteracted = false;
 
           // ── Chart.js plugin — draws the two handles after every render ────
           // Returns the rendered x position (CSS px) of the i-th data point.
@@ -427,11 +428,12 @@ const allGamesData = games;
             }
 
             document.getElementById("analyze-btn").style.display = "";
-            // pulse animatie resetten en opnieuw starten
-  var btn = document.getElementById("analyze-btn");
-  btn.classList.remove("pulsing");
-  void btn.offsetWidth; // reflow forceren zodat animatie herstart
-  btn.classList.add("pulsing");
+            if (graphInteracted) {
+              var btn = document.getElementById("analyze-btn");
+              btn.classList.remove("pulsing");
+              void btn.offsetWidth;
+              btn.classList.add("pulsing");
+            }
           }
 
           updateRangeInfo();
@@ -440,6 +442,7 @@ const allGamesData = games;
             var hit = hitTest(getCssX(e));
             if (!hit) return;
             e.preventDefault();
+            graphInteracted = true;
             dragging = hit;
             ratingCanvas.setPointerCapture(e.pointerId);
             ratingCanvas.style.cursor = "grabbing";
