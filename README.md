@@ -35,3 +35,12 @@ De geselecteerde tijd periode van de rating graph update nu live en vertelt ook 
 
 
 ![alt text](image-8.png)
+
+
+
+![duplicte results](image-3.png)
+
+
+![snake border on cta](image-9.png)
+
+![header flex](image-10.png)

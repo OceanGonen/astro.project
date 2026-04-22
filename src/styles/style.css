@@ -68,12 +68,19 @@ button {
 }
 
 
+.header-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
 /* MARK: CTA */
 .input-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .input-row label {
@@ -193,12 +200,17 @@ canvas {
   transition: background 0.2s, color 0.2s;
 }
 
-#analyze-btn:hover {
-  background: #ff8c00;
-  color: var(--bg);
+
+
+#main-cards-row {
+  margin-top: 0.5rem;
 }
 
-#period-cards-row {
+.period-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   margin-top: 1rem;
 }
 
@@ -218,41 +230,74 @@ canvas {
   padding: 7px 18px;
   border-radius: var(--radius);
   background: transparent;
-  border: 1px solid var(--primary-accent);
-  color: var(--primary-accent);
+  border: 1px solid grey;
+  color: grey;
   font-size: 0.83rem;
   font-family: 'text-font';
   cursor: pointer;
   margin: 0;
   transition: background 0.2s, color 0.2s, transform 0.15s;
+  opacity: 0.5;
+}
+
+#analyze-btn:hover{
+    cursor: not-allowed;
+
 }
 
 #analyze-btn.pulsing {
-  background: var(--orange);
   color: #fff;
   border-color: transparent;
   position: relative;
-  isolation: isolate;
+  pointer-events: all;
+  opacity: 1;
+  
+
+
+}
+#analyze-btn.pulsing:hover{
+    cursor: pointer;
+    background: #896436;
+
 }
 
 #analyze-btn.pulsing::before {
   content: '';
   position: absolute;
   inset: -2px;
+  pointer-events: none;
   border-radius: calc(var(--radius) + 2px);
+  padding: 2px;
   background: conic-gradient(
-    from 0deg,
-    var(--orange) 0deg 130deg,
-    transparent 130deg 180deg,
-    var(--orange) 180deg 310deg,
-    transparent 310deg 360deg
+    from var(--snake-a),
+    transparent 0deg,
+    transparent 10deg,
+    var(--orange) 20deg,
+    var(--orange) 180deg,
+    transparent 180deg,
+    transparent 190deg,
+    var(--orange) 200deg,
+    var(--orange) 360deg
   );
-  animation: snake-spin 1.5s linear infinite;
-  z-index: -1;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: snake-border 3s ease-in-out infinite;
 }
 
-@keyframes snake-spin {
-  to { transform: rotate(360deg); }
+@property --snake-a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes snake-border {
+  to { --snake-a: 180deg; }
 }
 
 
@@ -266,7 +311,7 @@ canvas {
 
 .cards-row {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   width: 100%;
   margin-top: 1rem;
 }

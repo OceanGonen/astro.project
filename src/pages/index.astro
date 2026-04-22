@@ -136,10 +136,13 @@ const allGamesData = games;
   </head>
   <body>
 
-    <h1>ChessLens</h1>
 
     <form method="GET" action="/">
+      <div class="header-row">
+
+        <h1>ChessLens</h1>
       <div class="input-row">
+
         <label for="player">LiChess username</label>
         <input
           type="text"
@@ -150,6 +153,7 @@ const allGamesData = games;
           required
         />
         <button type="submit"><span>Fetch player stats</span></button>
+      </div>
       </div>
     </form>
 
@@ -177,21 +181,25 @@ const allGamesData = games;
   </div>
 )}
 
-{timeline.length > 0 && (
-  <div id="period-cards-row" class="cards-row"></div>
-)}
+    
 
-    {(bestGame || worstGame) && (
-      <div class="cards-row">
+    {(bestGame || worstGame || timeline.length > 0) && (
+      <div id="main-cards-row" class="cards-row">
 
         {bestGame && (
          <div class="result best">
   <h3>Best Game</h3>
-  <strong>{bestGame.accuracy}%</strong>
+  <strong
+    data-val={bestGame.accuracy}
+    data-decimals="1"
+    data-suffix="%"
+    data-color={bestGame.winner === "draw" ? "#6ab8cc" : bestGame.winner === bestGame.color ? "#5bb274" : "#e05a5a"}
+    style={bestGame.winner === "draw" ? "color:#6ab8cc" : bestGame.winner === bestGame.color ? "color:#5bb274" : "color:#e05a5a"}
+  >{bestGame.accuracy}%</strong>
 
   <div class="card-body">
     <div class="card-side">
-      <p><span>Rating</span>  <b>{bestGame.rating}</b></p>
+      <p><span>Rating</span>  <b data-val={bestGame.rating} data-decimals="0" data-suffix="" data-color="#d8f5ff">{bestGame.rating}</b></p>
       <p><span>Color</span>   <b>{bestGame.color}</b></p>
       <p><span>Date</span>    <b>{new Date(bestGame.date).toLocaleDateString("en-GB")}</b></p>
       
@@ -200,8 +208,10 @@ const allGamesData = games;
     <div class="card-side">
       <p class="side-label">Opponent</p>
       <p><span>Name</span>      <b>{bestGame.opponent.name}</b></p>
-      <p><span>Rating</span>    <b>{bestGame.opponent.rating}</b></p>
-      <p><span>Accuracy</span>  <b>{bestGame.opponent.accuracy != null ? bestGame.opponent.accuracy + "%" : "N/A"}</b></p>
+      <p><span>Rating</span>    <b data-val={bestGame.opponent.rating} data-decimals="0" data-suffix="" data-color="#d8f5ff">{bestGame.opponent.rating}</b></p>
+      <p><span>Accuracy</span>  {bestGame.opponent.accuracy != null
+        ? <b data-val={bestGame.opponent.accuracy} data-decimals="0" data-suffix="%" data-color="#d8f5ff">{bestGame.opponent.accuracy}%</b>
+        : <b>N/A</b>}</p>
     </div>
   </div>
 
@@ -218,12 +228,18 @@ const allGamesData = games;
         {worstGame && (
           <div class="result worst">
   <h3>Worst Game</h3>
-  <strong>{worstGame.accuracy.toFixed(1)}%</strong>
+  <strong
+    data-val={worstGame.accuracy}
+    data-decimals="1"
+    data-suffix="%"
+    data-color={worstGame.winner === "draw" ? "#6ab8cc" : worstGame.winner === worstGame.color ? "#5bb274" : "#e05a5a"}
+    style={worstGame.winner === "draw" ? "color:#6ab8cc" : worstGame.winner === worstGame.color ? "color:#5bb274" : "color:#e05a5a"}
+  >{worstGame.accuracy.toFixed(1)}%</strong>
 
   <div class="card-body">
     <div class="card-side">
       
-      <p><span>Rating</span>  <b>{worstGame.rating}</b></p>
+      <p><span>Rating</span>  <b data-val={worstGame.rating} data-decimals="0" data-suffix="" data-color="#d8f5ff">{worstGame.rating}</b></p>
       <p><span>Color</span>   <b>{worstGame.color}</b></p>
       <p><span>Date</span>    <b>{new Date(worstGame.date).toLocaleDateString("en-GB")}</b></p>
      
@@ -232,8 +248,10 @@ const allGamesData = games;
     <div class="card-side">
       <p class="side-label">Opponent</p>
       <p><span>Name</span>      <b>{worstGame.opponent.name}</b></p>
-      <p><span>Rating</span>    <b>{worstGame.opponent.rating}</b></p>
-      <p><span>Accuracy</span>  <b>{worstGame.opponent.accuracy != null ? worstGame.opponent.accuracy + "%" : "N/A"}</b></p>
+      <p><span>Rating</span>    <b data-val={worstGame.opponent.rating} data-decimals="0" data-suffix="" data-color="#d8f5ff">{worstGame.opponent.rating}</b></p>
+      <p><span>Accuracy</span>  {worstGame.opponent.accuracy != null
+        ? <b data-val={worstGame.opponent.accuracy} data-decimals="0" data-suffix="%" data-color="#d8f5ff">{worstGame.opponent.accuracy}%</b>
+        : <b>N/A</b>}</p>
     </div>
   </div>
 
@@ -267,8 +285,8 @@ const allGamesData = games;
           var n       = labels.length;
 
           // ── Handle state ──────────────────────────────────────────────────
-          var handleA  = Math.max(0,     Math.floor(n * 0.25));
-          var handleB  = Math.min(n - 1, Math.floor(n * 0.75));
+          var handleA  = 0;
+          var handleB  = n - 1;
           var dragging = null; // 'A' | 'B' | null
           var graphInteracted = false;
 
@@ -479,6 +497,9 @@ const allGamesData = games;
 
             this.classList.remove("pulsing");
 
+            var periodLabel = document.getElementById("period-label");
+            if (periodLabel) periodLabel.textContent = labels[idxMin] + " – " + labels[idxMax];
+
             var filtered = allGames.filter(function (g) {
               var inRange = g.createdAt >= startTs && g.createdAt <= endTs;
               return inv ? !inRange : inRange;
@@ -503,7 +524,7 @@ const allGamesData = games;
               };
             }).filter(Boolean);
 
-            var row = document.getElementById("period-cards-row");
+            var row = document.getElementById("main-cards-row");
 
             if (!withAcc.length) {
               row.innerHTML = "<p style='color:var(--text-muted);font-size:0.83rem'>No analyzed games in this period.</p>";
@@ -518,16 +539,46 @@ const allGamesData = games;
               return g.winner === g.color ? ["Win", "win"] : ["Loss", "loss"];
             }
 
+            function animateNumber(el, end, decimals, duration, suffix, finalColor) {
+              var startTime = null;
+              el.textContent = "0" + suffix;
+              function step(ts) {
+                if (!startTime) startTime = ts;
+                var progress = Math.min((ts - startTime) / duration, 1);
+                var ease = 1 - Math.pow(1 - progress, 3);
+                el.textContent = (end * ease).toFixed(decimals) + suffix;
+                if (progress < 1) {
+                  requestAnimationFrame(step);
+                } else {
+                  el.textContent = end.toFixed(decimals) + suffix;
+                  el.animate([
+                    { transform: "scale(1.05)", color: "#ffffff" },
+                    { transform: "scale(1.0)",  color: finalColor }
+                  ], { duration: 400, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)", fill: "forwards" });
+                }
+              }
+              requestAnimationFrame(step);
+            }
+            window.animateNumber = animateNumber;
+
+            function resultColor(g) {
+              if (g.winner === "draw") return "#6ab8cc";
+              return g.winner === g.color ? "#5bb274" : "#e05a5a";
+            }
+
             function cardHTML(g, label, cls) {
-              var ri     = resultInfo(g);
-              var oppAcc = g.opponent.accuracy != null ? g.opponent.accuracy + "%" : "N/A";
+              var ri       = resultInfo(g);
+              var accCol   = resultColor(g);
+              var oppAccEl = g.opponent.accuracy != null
+                ? '<b data-val="' + g.opponent.accuracy + '" data-decimals="0" data-suffix="%" data-color="#d8f5ff">0%</b>'
+                : "<b>N/A</b>";
               return (
                 '<div class="result ' + cls + '">' +
                   "<h3>" + label + "</h3>" +
-                  "<strong>" + g.accuracy.toFixed(1) + "%</strong>" +
+                  '<strong data-val="' + g.accuracy.toFixed(1) + '" data-decimals="1" data-suffix="%" data-color="' + accCol + '">0%</strong>' +
                   '<div class="card-body">' +
                     '<div class="card-side">' +
-                      "<p><span>Rating</span><b>" + g.rating + "</b></p>" +
+                      '<p><span>Rating</span><b data-val="' + g.rating + '" data-decimals="0" data-suffix="" data-color="#d8f5ff">0</b></p>' +
                       "<p><span>Color</span><b>"  + g.color  + "</b></p>" +
                       "<p><span>Date</span><b>"   + new Date(g.date).toLocaleDateString("en-GB") + "</b></p>" +
                     "</div>" +
@@ -535,8 +586,8 @@ const allGamesData = games;
                     '<div class="card-side">' +
                       '<p class="side-label">Opponent</p>' +
                       "<p><span>Name</span><b>"     + (g.opponent.name || "?") + "</b></p>" +
-                      "<p><span>Rating</span><b>"   + g.opponent.rating        + "</b></p>" +
-                      "<p><span>Accuracy</span><b>" + oppAcc                   + "</b></p>" +
+                      '<p><span>Rating</span><b data-val="' + g.opponent.rating + '" data-decimals="0" data-suffix="" data-color="#d8f5ff">0</b></p>' +
+                      "<p><span>Accuracy</span>" + oppAccEl + "</p>" +
                     "</div>" +
                   "</div>" +
                   '<div class="card-footer">' +
@@ -548,8 +599,20 @@ const allGamesData = games;
               );
             }
 
-            row.innerHTML = cardHTML(best, "Best in period", "best") +
-                            cardHTML(worst, "Worst in period", "worst");
+            row.innerHTML = cardHTML(best, "Highest accurancy", "best") +
+                            cardHTML(worst, "Lowest accurancy", "worst");
+            row.querySelectorAll("[data-val]").forEach(function (el, i) {
+              setTimeout(function () {
+                animateNumber(
+                  el,
+                  parseFloat(el.dataset.val),
+                  parseInt(el.dataset.decimals),
+                  i < 2 ? 1100 : 850,
+                  el.dataset.suffix,
+                  el.dataset.color
+                );
+              }, i * 120);
+            });
             row.scrollIntoView({ behavior: "smooth", block: "nearest" });
           });
 
@@ -560,5 +623,22 @@ const allGamesData = games;
 </script>
     )}
 
-  </body> 
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('[data-val]').forEach(function (el, i) {
+        setTimeout(function () {
+          if (typeof window.animateNumber !== 'function') return;
+          window.animateNumber(
+            el,
+            parseFloat(el.dataset.val),
+            parseInt(el.dataset.decimals),
+            i < 2 ? 1100 : 850,
+            el.dataset.suffix,
+            el.dataset.color
+          );
+        }, i * 120);
+      });
+    });
+  </script>
+  </body>
 </html>
