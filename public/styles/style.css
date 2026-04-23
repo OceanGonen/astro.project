@@ -8,15 +8,15 @@
 
 @font-face {
   font-family: 'text-font';
-  src: url('../assets/fonts/text-font/gatte-modern-font/GatteModernLight-e94GO.otf') format('opentype');
+  src: url('../assets/fonts/text-font/gatte-modern-font/GatteModernMedium-Wprd9.otf') format('opentype');
 
 }
 
 :root {
-  --bg:         #0d1f24;
---bg2:        #152c33;
---bg3:        #1c3840;
---text-muted: #6ab8cc;
+  --bg: #0d1f24;
+  --bg2: #152c33;
+  --bg3: #1c3840;
+  --text-muted: #6ab8cc;
   --primary-accent: #00d4ff;
   --teal-dim: rgba(0, 212, 255, 0.10);
   --teal-border: rgba(0, 212, 255, 0.28);
@@ -68,7 +68,7 @@ button {
 }
 
 
-.header-row{
+.header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -140,7 +140,7 @@ button {
   transform: translateX(0);
 }
 
-.input-row button:hover span{
+.input-row button:hover span {
   color: var(--bg) !important;
 }
 
@@ -240,8 +240,8 @@ canvas {
   opacity: 0.5;
 }
 
-#analyze-btn:hover{
-    cursor: not-allowed;
+#analyze-btn:hover {
+  cursor: not-allowed;
 
 }
 
@@ -251,13 +251,14 @@ canvas {
   position: relative;
   pointer-events: all;
   opacity: 1;
-  
+
 
 
 }
-#analyze-btn.pulsing:hover{
-    cursor: pointer;
-    background: #896436;
+
+#analyze-btn.pulsing:hover {
+  cursor: pointer;
+  background: #896436;
 
 }
 
@@ -268,17 +269,15 @@ canvas {
   pointer-events: none;
   border-radius: calc(var(--radius) + 2px);
   padding: 2px;
-  background: conic-gradient(
-    from var(--snake-a),
-    transparent 0deg,
-    transparent 10deg,
-    var(--orange) 20deg,
-    var(--orange) 180deg,
-    transparent 180deg,
-    transparent 190deg,
-    var(--orange) 200deg,
-    var(--orange) 360deg
-  );
+  background: conic-gradient(from var(--snake-a),
+      transparent 0deg,
+      transparent 10deg,
+      var(--orange) 20deg,
+      var(--orange) 180deg,
+      transparent 180deg,
+      transparent 190deg,
+      var(--orange) 200deg,
+      var(--orange) 360deg);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -297,7 +296,9 @@ canvas {
 }
 
 @keyframes snake-border {
-  to { --snake-a: 180deg; }
+  to {
+    --snake-a: 180deg;
+  }
 }
 
 
@@ -324,7 +325,7 @@ canvas {
 
 /* ── Result cards ── */
 .result {
-  background: var(--bg2);
+  background: #13151a;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.25rem;
@@ -500,3 +501,249 @@ b.draw {
 .error {
   color: red;
 }
+
+
+
+/* MARK: accent color */
+
+/* MARK: Orange accents */
+
+/* h1 title gets a subtle orange tint on the dot or via a pseudo */
+h1::after {
+  content: '.';
+  color: var(--orange);
+}
+
+.result {
+  /* border-right: solid 1px var(--orange);
+  border-bottom: solid 1px var(--orange); */
+}
+
+/* Range info text — the game count gets orange */
+#range-info b {
+  color: var(--orange);
+}
+
+/* Date range in chart header */
+.date-range strong {
+  color: var(--orange);
+}
+
+/* View game link hover gets orange instead of teal */
+.result a:hover {
+  background: rgba(255, 140, 0, 0.12);
+  border-color: rgba(255, 140, 0, 0.35);
+  color: var(--orange);
+}
+
+/* Card divider gets a very subtle orange tint */
+.card-divider {
+  background: rgba(255, 140, 0, 0.15);
+}
+
+/* Period label above cards */
+.period-label {
+  color: var(--orange);
+}
+
+
+/* ── Responsive: Tablet (≤ 768px) ── */
+@media (max-width: 768px) {
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .input-row {
+    width: 100%;
+  }
+
+  .input-row label {
+    display: none;
+  }
+
+  .input-row input {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .input-row button {
+    flex-shrink: 0;
+  }
+}
+
+/* ── Responsive: Mobile (≤ 480px) ── */
+@media (max-width: 800px) {
+  body {
+    padding: 0.8rem;
+  }
+
+  canvas {
+    max-height: 180px;
+  }
+
+  .cards-row {
+    flex-direction: column;
+  }
+
+  .cards-row .result {
+    width: 100%;
+  }
+}
+
+
+/* MARK: Card label — h3 with inline trend icon */
+.card-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 0.5rem;
+}
+
+.trend-icon {
+  flex-shrink: 0;
+  display: block;
+}
+
+
+/* MARK: Best card — golden sheen */
+.result.best {
+  background: goldenrod;
+  border-color: rgba(255, 215, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+  transform-origin: left center;
+}
+
+.result.best:hover {
+  transform: perspective(600px) rotateY(4deg) rotateX(3deg);
+}
+
+.result.best::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -70px;
+  width: 70px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: skew(30deg) translateX(-70px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: none;
+}
+
+.result.best:hover::before {
+  animation: gold-sheen-hover 0.6s ease-in-out forwards;
+}
+
+.result.best::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -70px;
+  width: 70px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: skew(30deg) translateX(-70px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.result.best:not(:hover)::after {
+  animation: gold-sheen-reverse 0.5s ease-in-out forwards;
+}
+
+@keyframes gold-sheen-hover {
+  0% {
+    transform: skew(30deg) translateX(-70px);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: skew(30deg) translateX(1000px);
+    opacity: 0.8;
+  }
+}
+
+@keyframes gold-sheen-reverse {
+  0% {
+    transform: skew(30deg) translateX(1000px);
+    opacity: 0.8;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: skew(30deg) translateX(-70px);
+    opacity: 0;
+  }
+}
+
+.result.best>* {
+  position: relative;
+  z-index: 1;
+}
+
+.result.best h3 {
+  color: #3a2600;
+}
+
+.result.best strong {
+  color: #2a1800;
+}
+
+.result.best p {
+  color: #5a3c00;
+}
+
+.result.best p span{
+    color: #1a1000;
+
+}
+.result.best p b {
+  color: #FFF;
+}
+
+.result.best .result-label {
+  color: #5a3c00;
+}
+
+.result.best .card-divider {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.result.best .card-footer {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+.result.best a {
+  background: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #2a1800;
+}
+
+.result.best a:hover {
+  background: rgba(0, 0, 0, 0.22);
+  color: #1a1000;
+}
+
+.result.best b.win,
+.result.best b.loss,
+.result.best b.draw {
+  color: #1a1000;
+}
+
+

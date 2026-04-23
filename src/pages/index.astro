@@ -188,13 +188,13 @@ const allGamesData = games;
 
         {bestGame && (
          <div class="result best">
-  <h3>Best Game</h3>
+  <h3 class="card-label"><svg class="trend-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="1,11 5,7 8,9 13,4" stroke="#5bb274" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9,4 13,4 13,8" stroke="#5bb274" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Highest accuracy</h3>
   <strong
     data-val={bestGame.accuracy}
     data-decimals="1"
     data-suffix="%"
     data-color={bestGame.winner === "draw" ? "#6ab8cc" : bestGame.winner === bestGame.color ? "#5bb274" : "#e05a5a"}
-    style={bestGame.winner === "draw" ? "color:#6ab8cc" : bestGame.winner === bestGame.color ? "color:#5bb274" : "color:#e05a5a"}
+    style={bestGame.winner === "draw" ? "color:#6ab8cc" : bestGame.winner === bestGame.color ? "color:#2f7744" : "color:#e05a5a"}
   >{bestGame.accuracy}%</strong>
 
   <div class="card-body">
@@ -227,13 +227,13 @@ const allGamesData = games;
 
         {worstGame && (
           <div class="result worst">
-  <h3>Worst Game</h3>
+  <h3 class="card-label"><svg class="trend-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="1,4 5,8 8,6 13,11" stroke="#e05a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9,11 13,11 13,7" stroke="#e05a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Lowest accuracy</h3>
   <strong
     data-val={worstGame.accuracy}
     data-decimals="1"
     data-suffix="%"
     data-color={worstGame.winner === "draw" ? "#6ab8cc" : worstGame.winner === worstGame.color ? "#5bb274" : "#e05a5a"}
-    style={worstGame.winner === "draw" ? "color:#6ab8cc" : worstGame.winner === worstGame.color ? "color:#5bb274" : "color:#e05a5a"}
+    style={worstGame.winner === "draw" ? "color:#6ab8cc" : worstGame.winner === worstGame.color ? "color:#e05a5a" : "color:#e05a5a"}
   >{worstGame.accuracy.toFixed(1)}%</strong>
 
   <div class="card-body">
@@ -574,7 +574,10 @@ const allGamesData = games;
                 : "<b>N/A</b>";
               return (
                 '<div class="result ' + cls + '">' +
-                  "<h3>" + label + "</h3>" +
+                  '<h3 class="card-label">' + (cls === 'best'
+                    ? '<svg class="trend-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="1,11 5,7 8,9 13,4" stroke="#5bb274" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9,4 13,4 13,8" stroke="#5bb274" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+                    : '<svg class="trend-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="1,4 5,8 8,6 13,11" stroke="#e05a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9,11 13,11 13,7" stroke="#e05a5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+                  ) + label + '</h3>' +
                   '<strong data-val="' + g.accuracy.toFixed(1) + '" data-decimals="1" data-suffix="%" data-color="' + accCol + '">0%</strong>' +
                   '<div class="card-body">' +
                     '<div class="card-side">' +
@@ -599,8 +602,8 @@ const allGamesData = games;
               );
             }
 
-            row.innerHTML = cardHTML(best, "Highest accurancy", "best") +
-                            cardHTML(worst, "Lowest accurancy", "worst");
+            row.innerHTML = cardHTML(best, "Highest accuracy", "best") +
+                            cardHTML(worst, "Lowest accuracy", "worst");
             row.querySelectorAll("[data-val]").forEach(function (el, i) {
               setTimeout(function () {
                 animateNumber(
