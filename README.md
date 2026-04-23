@@ -44,3 +44,14 @@ De geselecteerde tijd periode van de rating graph update nu live en vertelt ook 
 ![snake border on cta](image-9.png)
 
 ![header flex](image-10.png)
+
+
+<img width="913" height="863" alt="image" src="https://github.com/user-attachments/assets/4afdd428-61cf-4d79-a71e-5dba32a7b38a" />
+
+
+<img width="905" height="848" alt="image" src="https://github.com/user-attachments/assets/0215edb2-7f3c-45c0-a7d2-c6d1380b3c38" />
+
+
+<img width="1906" height="848" alt="image" src="https://github.com/user-attachments/assets/006abb96-749c-443d-b618-9d1d693297c7" />
+
+
