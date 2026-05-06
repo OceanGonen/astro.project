@@ -23,7 +23,7 @@ Rating timeline gebouwd. Chart.js rendert de volledige ratinggeschiedenis van ee
 
 Best/worst game cards geïmplementeerd. Onder de grafiek worden twee kaarten naast elkaar getoond — de game met de hoogste accuracy en de game met de laagste accuracy. Per kaart is zichtbaar: accuracy percentage, rating, kleur, datum, tegenstander (naam, rating, accuracy) en het resultaat.
 
-## Feedbackmoment 1 
+## Feedbackmoment
 
 Tijdens de feedbackronde had Jad verteld dat de gekozen Web API's — de Clipboard API en de Web Share API — te eenvoudig zijn voor het niveau van het project. Beide API's zijn met een paar regels code geïmplementeerd en voegen weinig technische diepgang toe aan de applicatie. De feedback was om een API te kiezen die functioneel relevanter is en meer integratie vereist met de bestaande applicatielogica. Als vervolgstap ga ik onderzoeken welke Web API's beter aansluiten bij de kern van de app, zoals de Pointer Events API die al actief gebruikt wordt voor de draggable sliders, of de Web Animations API die de nummers animeert bij het laden van de resultatenkaarten.
 
