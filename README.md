@@ -13,15 +13,22 @@ Chart.js — voor de interactieve rating timeline visualisatie
 Lichess API integratie is gelukt. Het scheelt ook dat ik geen KEY nodig heb om toegang te krijgen. De fetch naar de Lichess API werkt nu correct met de parameters perfType=rapid, analysed=true en accuracy=true. De response komt binnen als NDJSON en wordt per regel geparsed naar een array van game-objecten.
 
 ![alt text](image.png)
+<img width="754" height="220" alt="image" src="https://github.com/user-attachments/assets/762aed9c-daca-4a88-a9bc-4ec3e05be41c" />
+
 Rating timeline gebouwd. Chart.js rendert de volledige ratinggeschiedenis van een speler als een filled line chart. De grafiek toont alle geanalyseerde rapid games over tijd, met datum op de x-as en rating op de y-as.
 
+
 ![alt text](image-1.png)
+<img width="1090" height="480" alt="image" src="https://github.com/user-attachments/assets/1d34e932-843b-414d-b8c5-c2ce1275a902" />
+
 Best/worst game cards geïmplementeerd. Onder de grafiek worden twee kaarten naast elkaar getoond — de game met de hoogste accuracy en de game met de laagste accuracy. Per kaart is zichtbaar: accuracy percentage, rating, kleur, datum, tegenstander (naam, rating, accuracy) en het resultaat.
 
 ![alt text](image-2.png)
 Dark theme toegepast. De UI is omgezet naar een donker kleurenschema met cyaan als primary accent, consistent door de hele pagina.
 
 ![alt text](image-3.png)
+<img width="900" height="196" alt="image" src="https://github.com/user-attachments/assets/0f1d806a-c5ff-4002-afb5-50f5a1b84523" />
+
 Draggable range sliders toegevoegd aan de grafiek. Twee sleepbare verticale lijnen op de Chart.js grafiek laten de gebruiker een tijdsperiode selecteren. Het geselecteerde gebied wordt visueel gehighlight. 
 
 ![alt text](image-4.png)
@@ -37,18 +44,15 @@ De geselecteerde tijd periode van de rating graph update nu live en vertelt ook 
 ![alt text](image-8.png)
 
 
-
-![duplicte results](image-3.png)
-
-
 ![snake border on cta](image-9.png)
+De CTA heb ik wat opvallender gemaakt met een snakeborder die alleen actief is als de sliders positie geupdate wordt. Dat maakt het duidelijk aan de gebruiker wanneer hij al de grafiek heeft aangepast. 
 
 ![header flex](image-10.png)
 
-
+De header heb ik een display flex gegeven voor wat betere lay-out en tegelijk de 
 <img width="913" height="863" alt="image" src="https://github.com/user-attachments/assets/4afdd428-61cf-4d79-a71e-5dba32a7b38a" />
 
-
+Ik heb nu ook de beste game card wat spectaculairder gemaakt door hem een goude shimmer te geven op hover. 
 <img width="905" height="848" alt="image" src="https://github.com/user-attachments/assets/0215edb2-7f3c-45c0-a7d2-c6d1380b3c38" />
 
 
