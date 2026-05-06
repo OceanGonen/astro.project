@@ -53,7 +53,7 @@ De CTA heb ik wat opvallender gemaakt met een snakeborder die alleen actief is a
 
 ![header flex](image-10.png)
 
-De header heb ik een display flex gegeven voor wat betere lay-out en tegelijk de 
+De header heb ik een display flex gegeven voor wat betere lay-out en tegelijk de website ook responsive gemaakt voor mobiel. 
 <img width="913" height="863" alt="image" src="https://github.com/user-attachments/assets/4afdd428-61cf-4d79-a71e-5dba32a7b38a" />
 
 Ik heb nu ook de beste game card wat spectaculairder gemaakt door hem een goude shimmer te geven op hover en de nummers te animeren met webanimations door ze omhoog te laten tellen tot het daadwerkelijke getal. 
