@@ -23,6 +23,10 @@ Rating timeline gebouwd. Chart.js rendert de volledige ratinggeschiedenis van ee
 
 Best/worst game cards geïmplementeerd. Onder de grafiek worden twee kaarten naast elkaar getoond — de game met de hoogste accuracy en de game met de laagste accuracy. Per kaart is zichtbaar: accuracy percentage, rating, kleur, datum, tegenstander (naam, rating, accuracy) en het resultaat.
 
+## Feedbackmoment 1 
+
+Tijdens de feedbackronde had Jad verteld dat de gekozen Web API's — de Clipboard API en de Web Share API — te eenvoudig zijn voor het niveau van het project. Beide API's zijn met een paar regels code geïmplementeerd en voegen weinig technische diepgang toe aan de applicatie. De feedback was om een API te kiezen die functioneel relevanter is en meer integratie vereist met de bestaande applicatielogica. Als vervolgstap ga ik onderzoeken welke Web API's beter aansluiten bij de kern van de app, zoals de Pointer Events API die al actief gebruikt wordt voor de draggable sliders, of de Web Animations API die de nummers animeert bij het laden van de resultatenkaarten.
+
 ![alt text](image-2.png)
 Dark theme toegepast. De UI is omgezet naar een donker kleurenschema met cyaan als primary accent, consistent door de hele pagina.
 
@@ -52,10 +56,15 @@ De CTA heb ik wat opvallender gemaakt met een snakeborder die alleen actief is a
 De header heb ik een display flex gegeven voor wat betere lay-out en tegelijk de 
 <img width="913" height="863" alt="image" src="https://github.com/user-attachments/assets/4afdd428-61cf-4d79-a71e-5dba32a7b38a" />
 
-Ik heb nu ook de beste game card wat spectaculairder gemaakt door hem een goude shimmer te geven op hover. 
+Ik heb nu ook de beste game card wat spectaculairder gemaakt door hem een goude shimmer te geven op hover en de nummers te animeren met webanimations door ze omhoog te laten tellen tot het daadwerkelijke getal. 
 <img width="905" height="848" alt="image" src="https://github.com/user-attachments/assets/0215edb2-7f3c-45c0-a7d2-c6d1380b3c38" />
+<img width="718" height="380" alt="image" src="https://github.com/user-attachments/assets/a9e8f9c5-8f15-4d09-bf5d-a83cc60cbdd4" />
+
 
 
 <img width="1906" height="848" alt="image" src="https://github.com/user-attachments/assets/006abb96-749c-443d-b618-9d1d693297c7" />
+
+## Feedbackmoment 
+Deze feedbackronde richtte zich op de landingspagina van ChessLens. Op dit moment bestaat de landingspagina alleen uit een invoerveld met een knop, zonder context of visuele identiteit. De feedback was dat de pagina meer karakter nodig heeft en direct duidelijk moet maken wat de applicatie doet. Als reactie hierop heb ik een verbeterd ontwerp uitgewerkt met een centrale tagline, een subtiele achtergrondanimatie met schaakstukken, een beschrijving van de kernfunctionaliteit.
 
 
