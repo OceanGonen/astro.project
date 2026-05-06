@@ -67,4 +67,8 @@ Ik heb nu ook de beste game card wat spectaculairder gemaakt door hem een goude 
 ## Feedbackmoment 
 Deze feedbackronde richtte zich op de landingspagina van ChessLens. Op dit moment bestaat de landingspagina alleen uit een invoerveld met een knop, zonder context of visuele identiteit. De feedback was dat de pagina meer karakter nodig heeft en direct duidelijk moet maken wat de applicatie doet. Als reactie hierop heb ik een verbeterd ontwerp uitgewerkt met een centrale tagline, een subtiele achtergrondanimatie met schaakstukken, een beschrijving van de kernfunctionaliteit.
 
+Before:
+<img width="1912" height="908" alt="image" src="https://github.com/user-attachments/assets/9811aef7-e9f2-4b82-a32b-ecc8c89216d9" />
+
+
 
