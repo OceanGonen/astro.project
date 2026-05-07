@@ -70,5 +70,12 @@ Deze feedbackronde richtte zich op de landingspagina van ChessLens. Op dit momen
 Before:
 <img width="1912" height="908" alt="image" src="https://github.com/user-attachments/assets/9811aef7-e9f2-4b82-a32b-ecc8c89216d9" />
 
+After:
+
+<img width="1918" height="827" alt="image" src="https://github.com/user-attachments/assets/fbff4768-f345-4a75-b211-3ade15617035" />
+
+Ik heb dus een simpele uitleg op de landingpage gezet wat het doet met een voorbeeld afbeelding van de Chart zodat de gebruiker ook weet wat ze kunnen verwachten. 
+
+
 
 
