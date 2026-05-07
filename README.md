@@ -82,6 +82,11 @@ After:
 
 Ik heb dus een simpele uitleg op de landingpage gezet wat het doet met een voorbeeld afbeelding van de Chart zodat de gebruiker ook weet wat ze kunnen verwachten. 
 
-
-
+## Bronnen
+- [Lichess API documentatie](https://lichess.org/api)
+- [Chart.js documentatie](https://www.chartjs.org/docs/)
+- [MDN Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+- [MDN Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events)
+- [MDN Web Share API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API)
+- Claude AI (Anthropic) — gebruikt voor code assistentie bij complexe functies zoals de draggable slider logica, de easing formule in animateNumber(), en de Chart.js plugin implementatie
 
