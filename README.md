@@ -2,11 +2,17 @@ Een Lichess schaakanalyse tool gebouwd met Astro. De applicatie haalt via de Lic
 
 Het project combineert de volgende technologieën en API's:
 
-Lichess API — content API voor het ophalen van schaakpartijen met accuraatheidsdata
-Pointer Events API — voor de draggable range sliders op de grafiek
-Web Share API — voor het delen van een game vergelijking
-Clipboard API — voor het kopiëren van PGN notatie naar het klembord
-Chart.js — voor de interactieve rating timeline visualisatie
+
+### Content API
+**Lichess API** — haalt geanalyseerde schaakpartijen op per speler. Geen API key nodig. De endpoint `api/games/user/{username}?perfType=rapid&analysed=true&accuracy=true` geeft NDJSON terug met accuracy data per partij.
+
+### Web API's
+**Pointer Events API** — gebruikt voor de twee sleepbare handles op de rating grafiek. `pointerdown`, `pointermove` en `pointerup` events detecteren wanneer de gebruiker een handle aanraakt en slepen, inclusief touch support op mobiel.
+
+**Web Animations API** — `element.animate()` zorgt voor de bounce animatie op de accuracy percentages en ratings wanneer de kaarten inladen. De getallen tellen op van 0 naar de echte waarde met een ease-out curve, en bij het bereiken van de eindwaarde springt het element kort op naar 105% schaal.
+
+**Web Share API** — de share knop op elke game kaart opent het native share menu van het apparaat. Op desktop valt het terug op het kopiëren van de game link naar het klembord.
+
 
 
 ![alt text](image-7.png)

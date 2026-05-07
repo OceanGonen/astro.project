@@ -1,6 +1,11 @@
 ---
 // @ts-nocheck
 
+/**
+ * Bronnen & Documentatie:
+ * - Lichess API: https://lichess.org/api (ND-JSON export van games)
+ */
+
 const player = Astro.url.searchParams.get("player");
 
 let games = [];
@@ -88,6 +93,8 @@ function getResult(game) {
 
 if (player) {
   try {
+    // Bron: Lichess API - User games export (application/x-ndjson)
+    // Documentatie: https://lichess.org/api#tag/Games/operation/apiGamesUser
     const response = await fetch(
       `https://lichess.org/api/games/user/${player}?perfType=rapid&analysed=true&accuracy=true`,
       { headers: { Accept: "application/x-ndjson" } }
@@ -97,11 +104,11 @@ if (player) {
 
     const text = await response.text();
     const raw  = text.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
-    games      = extractGames(raw);
+    games       = extractGames(raw);
 
     const grouped  = groupGamesByRating(games, player);
     const analysis = findAccuracyExtremes(grouped);
-    timeline       = createTimeline(games, player);
+    timeline        = createTimeline(games, player);
 
     for (const rating in analysis) {
       const { highest, lowest } = analysis[rating];
@@ -121,7 +128,6 @@ if (player) {
   }
 }
 
-// Safely serialize for client — define:vars handles the escaping
 const timelineData = timeline;
 const allGamesData = games;
   
@@ -137,25 +143,91 @@ const allGamesData = games;
   <body>
 
 
+  <div class="nav">
+  <h1>ChessLens<span class="logo-dot">.</span></h1>
+  <div class="nav-tag">lichess analyzer</div>
+</div>
+
+{!player && (
+  <div class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">Lichess game analyzer</div>
+      <div class="hero-title">Your games.<br/><b>Unfiltered.</b></div>
+      <div class="hero-quote">The average chess player never reviews their worst games. You're about to.</div>
+      <form method="GET" action="/">
+        <div class="hero-input-wrap">
+          <input type="text" name="player" placeholder="your lichess username" required autofocus/>
+          <button type="submit">Analyze →</button>
+        </div>
+      </form>
+      <div class="hero-hint">free · no account required · powered by lichess api</div>
+    </div>
+    <div class="hero-right">
+      <div class="chart-preview">
+        <div class="cp-header">
+          <div class="cp-title">Rating timeline</div>
+          <div class="cp-badge">drag to select period</div>
+        </div>
+      <svg class="cp-svg" viewBox="0 0 320 140" preserveAspectRatio="xMidYMid meet">          
+            <defs>
+            <linearGradient id="chartfill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4082A1" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#4082A1" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="35" x2="320" y2="35" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="0" y1="70" x2="320" y2="70" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="0" y1="105" x2="320" y2="105" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <rect x="110" y="0" width="120" height="130" fill="rgba(255,140,0,0.08)"/>
+          <path d="M0,100 C20,95 35,80 55,85 C75,90 90,60 110,65 C130,70 145,45 165,40 C185,35 200,55 220,50 C240,45 255,30 275,28 C295,26 305,30 320,25 L320,130 L0,130 Z" fill="url(#chartfill)"/>
+          <path d="M0,100 C20,95 35,80 55,85 C75,90 90,60 110,65 C130,70 145,45 165,40 C185,35 200,55 220,50 C240,45 255,30 275,28 C295,26 305,30 320,25" fill="none" stroke="#4082A1" stroke-width="2" stroke-linecap="round"/>
+          <line x1="110" y1="0" x2="110" y2="130" stroke="#ff8c00" stroke-width="1.5"/>
+          <line x1="230" y1="0" x2="230" y2="130" stroke="#ff8c00" stroke-width="1.5"/>
+          <circle cx="110" cy="8" r="6" fill="#ff8c00"/>
+          <circle cx="230" cy="8" r="6" fill="#ff8c00"/>
+          <circle cx="0" cy="100" r="3" fill="#4082A1"/>
+          <circle cx="55" cy="85" r="3" fill="#4082A1"/>
+          <circle cx="110" cy="65" r="3" fill="#ff8c00" stroke="#0d1f24" stroke-width="1.5"/>
+          <circle cx="165" cy="40" r="3" fill="#4082A1"/>
+          <circle cx="220" cy="50" r="3" fill="#4082A1"/>
+          <circle cx="230" cy="48" r="3" fill="#ff8c00" stroke="#0d1f24" stroke-width="1.5"/>
+          <circle cx="275" cy="28" r="3" fill="#4082A1"/>
+          <circle cx="320" cy="25" r="3" fill="#4082A1"/>
+          <text x="0" y="142" font-size="8" fill="#3a7080" font-family="DM Mono,monospace">Jan 23</text>
+          <text x="100" y="142" font-size="8" fill="#ff8c00" font-family="DM Mono,monospace">Mar 23</text>
+          <text x="215" y="142" font-size="8" fill="#ff8c00" font-family="DM Mono,monospace">Aug 23</text>
+          <text x="290" y="142" font-size="8" fill="#3a7080" font-family="DM Mono,monospace">Jan 24</text>
+        </svg>
+        <div class="cp-footer">
+          <div class="cp-range">Mar 23 – Aug 23 · 13 games</div>
+          <div class="cp-cta">enter username to load your data →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-strip">
+    <div class="feat">Rating timeline</div>
+    <div class="divider-dot"></div>
+    <div class="feat">Draggable range</div>
+    <div class="divider-dot"></div>
+    <div class="feat">Accuracy analysis</div>
+    <div class="divider-dot"></div>
+    <div class="feat">Best & worst game</div>
+  </div>
+)}
+
+{player && (
+  <div class="nav-form">
     <form method="GET" action="/">
-      <div class="header-row">
-
-        <h1>ChessLens</h1>
       <div class="input-row">
-
         <label for="player">LiChess username</label>
-        <input
-          type="text"
-          id="player"
-          name="player"
-          placeholder="Enter username"
-          value={player ?? ""}
-          required
-        />
+        <input type="text" id="player" name="player" placeholder="Enter username" value={player ?? ""} required/>
         <button type="submit"><span>Fetch player stats</span></button>
       </div>
-      </div>
     </form>
+  </div>
+)}
 
     {error && <p class="error">Error: {error}</p>}
 
@@ -221,6 +293,7 @@ const allGamesData = games;
     {getResult(bestGame)}
   </b>
   <a href={`https://lichess.org/${bestGame.id}`} target="_blank">View game →</a>
+  <button class="share-btn" onclick={`shareGame('${bestGame.id}',${bestGame.accuracy},'${getResult(bestGame)}')`}>↗ Share</button>
 </div>
 </div>
         )}
@@ -261,6 +334,7 @@ const allGamesData = games;
     {getResult(worstGame)}
   </b>
   <a href={`https://lichess.org/${worstGame.id}`} target="_blank">View game →</a>
+  <button class="share-btn" onclick={`shareGame('${worstGame.id}',${worstGame.accuracy},'${getResult(worstGame)}')`}>↗ Share</button>
 </div></div>
         )}
 
@@ -274,6 +348,8 @@ const allGamesData = games;
     )}
 
     {timeline.length > 0 && (
+      // Bron: Chart.js Library
+      // Documentatie: https://www.chartjs.org/docs/latest/
       <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     )}
 
@@ -284,17 +360,17 @@ const allGamesData = games;
           var ratings = window.__timelineData.map(function (p) { return p.rating; });
           var n       = labels.length;
 
-          // ── Handle state ──────────────────────────────────────────────────
+          //  Handle state 
           var handleA  = 0;
           var handleB  = n - 1;
-          var dragging = null; // 'A' | 'B' | null
+          var dragging = null; 
           var graphInteracted = false;
 
-          // ── Chart.js plugin — draws the two handles after every render ────
-          // Returns the rendered x position (CSS px) of the i-th data point.
-          // chart.getDatasetMeta(0).data[i].x is the v4-compatible way;
-          // Chart.js applies the DPR scale to ctx internally, so these coords
-          // are already in CSS-pixel space and can be used directly in ctx calls.
+          /**
+           * Chart.js Custom Plugin implementatie
+           * Bron: Claude AI assistentie voor het tekenen op de canvas laag en coördinaten mapping.
+           * Documentatie over plugins: https://www.chartjs.org/docs/latest/developers/plugins.html
+           */
           function pointX(ch, idx) {
             return ch.getDatasetMeta(0).data[idx].x;
           }
@@ -317,10 +393,10 @@ const allGamesData = games;
 
               ctx.save();
 
-              // ── Region fill ───────────────────────────────────────────────
+              //  Region fill 
               ctx.fillStyle = inv
-                ? "rgba(255, 140, 0, 0.18)"   // red tint outside handles
-                : "rgba(255, 140, 0, 0.18)";  // orange tint between handles
+                ? "rgba(255, 140, 0, 0.18)"   
+                : "rgba(255, 140, 0, 0.18)";  // orange tint 
 
               if (!inv) {
                 ctx.fillRect(lft, ca.top, rgt - lft, ca.bottom - ca.top);
@@ -329,7 +405,7 @@ const allGamesData = games;
                 ctx.fillRect(rgt,     ca.top, ca.right - rgt, ca.bottom - ca.top);
               }
 
-              // ── Handles ───────────────────────────────────────────────────
+              //  Handles 
               function drawHandle(x) {
                 ctx.strokeStyle = col;
                 ctx.lineWidth   = 2;
@@ -351,7 +427,7 @@ const allGamesData = games;
             },
           };
 
-          // ── Create chart ──────────────────────────────────────────────────
+          //  Create chart 
           var ratingCanvas = document.getElementById("ratingChart");
           var chart = new Chart(ratingCanvas, {
             type: "line",
@@ -402,14 +478,15 @@ const allGamesData = games;
             },
           });
 
-          // ── Pointer drag ──────────────────────────────────────────────────
-          var HIT_CSS = 14; // hit-test radius in CSS pixels
+          // Pointer drag & Hit testing
+          // Bron: MDN Pointer Events API (https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events)
+          // Logica voor draggable slider handles ontwikkeld met hulp van Claude AI.
+          var HIT_CSS = 14; 
 
           function getCssX(e) {
             return e.clientX - ratingCanvas.getBoundingClientRect().left;
           }
 
-          // pointX() returns CSS pixels, same space as pointer events.
           function cssXToIdx(cssX) {
             var closest = 0, minDist = Infinity;
             for (var i = 0; i < n; i++) {
@@ -427,7 +504,7 @@ const allGamesData = games;
             return null;
           }
 
-          // ── Range info text ───────────────────────────────────────────────
+          // ── Range info text 
           function updateRangeInfo() {
             var inv    = handleA > handleB;
             var idxMin = Math.min(handleA, handleB);
@@ -474,8 +551,8 @@ const allGamesData = games;
             }
             var idx = cssXToIdx(cssX);
             if (dragging === "A") handleA = idx;
-            else                  handleB = idx;
-            chart.draw(); // redraw chart → triggers rangePlugin.afterDraw
+            else                   handleB = idx;
+            chart.draw(); 
             updateRangeInfo();
           });
 
@@ -485,7 +562,7 @@ const allGamesData = games;
             ratingCanvas.style.cursor = "";
           });
 
-          // ── Analyze period ────────────────────────────────────────────────
+          //  Analyze period 
           document.getElementById("analyze-btn").addEventListener("click", function () {
             var playerName = (new URLSearchParams(location.search).get("player") || "").toLowerCase();
             var allGames   = window.__allGames || [];
@@ -539,18 +616,27 @@ const allGamesData = games;
               return g.winner === g.color ? ["Win", "win"] : ["Loss", "loss"];
             }
 
+            /**
+             * animateNumber()
+             * Bron: Claude AI (Anthropic)
+             * Gebruikt voor soepele interpolatie van getallen en de specifieke easing-formule.
+             * Maakt tevens gebruik van de Web Animations API (MDN: https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+             */
             function animateNumber(el, end, decimals, duration, suffix, finalColor) {
               var startTime = null;
               el.textContent = "0" + suffix;
+              
               function step(ts) {
                 if (!startTime) startTime = ts;
                 var progress = Math.min((ts - startTime) / duration, 1);
+                // Cubic ease-out formule geleverd door Claude AI voor visueel effect
                 var ease = 1 - Math.pow(1 - progress, 3);
                 el.textContent = (end * ease).toFixed(decimals) + suffix;
                 if (progress < 1) {
                   requestAnimationFrame(step);
                 } else {
                   el.textContent = end.toFixed(decimals) + suffix;
+                  // Final "pop" animatie via Web Animations API
                   el.animate([
                     { transform: "scale(1.05)", color: "#ffffff" },
                     { transform: "scale(1.0)",  color: finalColor }
@@ -563,7 +649,7 @@ const allGamesData = games;
 
             function resultColor(g) {
               if (g.winner === "draw") return "#6ab8cc";
-              return g.winner === g.color ? "#5bb274" : "#e05a5a";
+              return g.winner === g.color ? "#2f7744" : "#e05a5a";
             }
 
             function cardHTML(g, label, cls) {
@@ -597,6 +683,7 @@ const allGamesData = games;
                     '<span class="result-label">Result:</span>' +
                     '<b class="' + ri[1] + '">' + ri[0] + "</b>" +
                     '<a href="https://lichess.org/' + g.id + '" target="_blank">View game \u2192</a>' +
+                    '<button class="share-btn" onclick="shareGame(\'' + g.id + '\',' + g.accuracy.toFixed(1) + ',\'' + ri[0] + '\')">\u2197 Share</button>' +
                   "</div>" +
                 "</div>"
               );
@@ -625,6 +712,35 @@ const allGamesData = games;
   window.__allGames = allGamesData;
 </script>
     )}
+
+  <script is:inline>
+    /**
+     * Share Functie
+     * Bron: MDN Web Share API (https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API)
+     * Fallback: Clipboard API (https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API)
+     */
+    window.showShareToast = function(msg) {
+      var t = document.createElement('div');
+      t.className = 'share-toast';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(function() { t.classList.add('share-toast--out'); }, 2000);
+      setTimeout(function() { document.body.removeChild(t); }, 2500);
+    };
+
+    window.shareGame = function(id, accuracy, result) {
+      var url = 'https://lichess.org/' + id;
+      var text = 'Accuracy: ' + accuracy + '% · ' + result;
+      if (navigator.share) {
+        navigator.share({ title: 'ChessLens — Game Analysis', text: text, url: url })
+          .catch(function(e) { if (e.name !== 'AbortError') throw e; });
+      } else {
+        navigator.clipboard.writeText(url).then(function() {
+          window.showShareToast('Link copied to clipboard');
+        });
+      }
+    };
+  </script>
 
   <script is:inline>
     document.addEventListener('DOMContentLoaded', function () {
